@@ -14,6 +14,10 @@ public class GrafoAutomato {
         estados = new ArrayList<>();
         AdicionarEstado(prefixoEst + valEst, false);
         valEst++;
+        
+        for(Alfabeto p:Alfabeto.values()){
+            this.AdicionarPalavra(p.toString());
+        }
     }
     
     public Estado BuscaEstado(String nomeEstado){
@@ -80,6 +84,8 @@ public class GrafoAutomato {
     }
     
     private boolean VerificaToken(String estado, char[] palavra, int index){
+        if((index >= palavra.length))
+            return false;
         Estado est = BuscaEstado(estado);
         String estDest = VerificaTransicoes(est.getTransicoes(), palavra[index]);
         
