@@ -10,21 +10,17 @@ public class Automato {
 
 
     public static void main(String[] args) {
-       /*List<String> alfabeto = new ArrayList<>();
-       alfabeto.add("private");
-       alfabeto.add("public");
-       alfabeto.add("integer");
+       List<GrafoAutomato> automatos = new ArrayList<GrafoAutomato>();
        
-       
-       for(String s : alfabeto){
-           aut.AdicionarPalavra(s);
-       }*/
-       GrafoAutomato aut = new GrafoAutomato();
+       for(Alfabeto a : Alfabeto.values()){
+           automatos.add(new GrafoAutomato(a.toString()));
+       }
+
        System.out.println("Digite a palavra a ser validada:");
        Scanner sc = new Scanner(System.in);
        String palavra = sc.nextLine();
        
-       System.out.println(aut.VerificaPalavra(palavra));
+       System.out.println(AnalisadorLexico.VerificaPalavra(palavra, automatos));
        
     }
       

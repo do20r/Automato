@@ -10,14 +10,15 @@ public class GrafoAutomato {
     private List<Estado> estados;
     private String prefixoEst = "q";
     
-    public GrafoAutomato(){
+    public List<Estado> getEstados(){
+        return estados;
+    }
+    
+    public GrafoAutomato(String palavra){
         estados = new ArrayList<>();
-        AdicionarEstado(prefixoEst + valEst, false);
+        AdicionaEstado(prefixoEst + valEst, false);
         valEst++;
-        
-        for(Alfabeto p:Alfabeto.values()){
-            this.AdicionarPalavra(p.toString());
-        }
+        AdicionaPalavra("q0", palavra.toCharArray(), 0);
     }
     
     public Estado BuscaEstado(String nomeEstado){
@@ -27,7 +28,7 @@ public class GrafoAutomato {
         }
         return null;
     }
-    
+      
     private void AdicionaTransicao(String origem, String destino, char token){
         Estado ori = BuscaEstado(origem);
         Estado dest = BuscaEstado(destino);
@@ -41,7 +42,7 @@ public class GrafoAutomato {
         }
     }
     
-    private void AdicionarEstado(String nome, boolean estFinal){
+    private void AdicionaEstado(String nome, boolean estFinal){
         Estado e = BuscaEstado(nome);
         if(e==null)
         {
@@ -52,11 +53,7 @@ public class GrafoAutomato {
         }
     }
     
-    public void AdicionarPalavra(String palavra){
-        AdicionarTransicao("q0", palavra.toCharArray(), 0);
-    }
-    
-    private void AdicionarTransicao(String estado, char[] token, int index){
+    private void AdicionaPalavra(String estado, char[] token, int index){
         if((token.length - 1) < index)
             return;
         
@@ -66,47 +63,15 @@ public class GrafoAutomato {
         if(estNome == null){
             String novoEstado = prefixoEst + valEst;
             valEst++;
-            AdicionarEstado(novoEstado, (token.length - 1) == index);
+            AdicionaEstado(novoEstado, (token.length - 1) == index);
             AdicionaTransicao(est.getNomeEstado(),novoEstado,token[index]);  
             index++;
-            AdicionarTransicao(novoEstado, token, index);            
+            AdicionaPalavra(novoEstado, token, index);            
         }
         else{
             index++;             
-            AdicionarTransicao(estNome, token, index);
+            AdicionaPalavra(estNome, token, index);
         }
         
-    }
-    
-    public boolean VerificaPalavra(String palavra){
-        char[] cPalavra = palavra.toCharArray();
-        return VerificaToken("q0", cPalavra, 0);
-    }
-    
-    private boolean VerificaToken(String estado, char[] palavra, int index){
-        if((index >= palavra.length))
-            return false;
-        Estado est = BuscaEstado(estado);
-        String estDest = VerificaTransicoes(est.getTransicoes(), palavra[index]);
-        
-        if((estDest != null) && (index <= palavra.length)){        
-            if(((palavra.length - 1) == index) && BuscaEstado(estDest).isEstFinal())
-                return true;
-            else{
-                index++;
-                return VerificaToken(estDest, palavra, index);                
-            }
-        }
-        
-        return false;
-        
-    }
-    
-    private String VerificaTransicoes(List<Transicao> trans, char transicao){
-        for(Transicao t : trans){
-            if(transicao == t.getToken())
-                return t.getDestino().getNomeEstado();
-        }
-        return null;
     }
 }
